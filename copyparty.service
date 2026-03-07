@@ -13,8 +13,9 @@ ExecReload=/bin/kill -s USR1 $MAINPID
 PermissionsStartOnly=true
 Environment=XDG_CONFIG_HOME=/var/lib/copyparty/.config
 ExecStart=/usr/bin/python3 /usr/bin/copyparty -c /home/cpp/conf
-Restart=on-failure
+Restart=always
 RestartSec=10
+RuntimeMaxSec=86400
 
 [Install]
 WantedBy=multi-user.target
