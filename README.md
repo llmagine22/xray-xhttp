@@ -14,8 +14,8 @@ To a Deep Packet Inspection (DPI) firewall, this setup looks like:
 
 1. **Public Interface (Port 443):** NGINX listens for HTTPS traffic.
 2. **Traffic Splitting:**
-* **Root path (`/`)**: Serves a legitimate static website (e.g., a 2048 game).
-* **Secret path (`/api/stream`)**: Forwards traffic to the local Xray backend.
+* **Root path (`/`)**: Serves a legitimate service (e.g., a copyparty server).
+* **Secret path (`/video/stream-dl`)**: Forwards traffic to the local Xray backend.
 
 
 3. **Xray Backend (Port 8080):** Accepts decrypted HTTP traffic from NGINX, unwraps the VLESS protocol, and routes it to the internet.
@@ -32,32 +32,63 @@ To a Deep Packet Inspection (DPI) firewall, this setup looks like:
 
 ## 🚀 Server-Side Setup
 
+
+### 0. Security
+
+1) Change ssh port, ban root
+2) :
+```bash
+useradd -m /bin/bash lupin
+passwd lupin
+nano /etc/sudoers
+
+```
+ add *lupin ALL=(ALL:ALL) ALL*
+
 ### 1. Install Dependencies
 
 Update your system and install NGINX and Certbot.
-
 ```bash
-apt update && apt install nginx certbot python3-certbot-nginx -y
+su lupin
 
 ```
 
-### 2. Setup the "Camouflage" Website
-
-Remove the default NGINX page and download a static website template (e.g., a game).
-
 ```bash
-cd /var/www/html
-rm index.nginx-debian.html
-wget https://raw.githubusercontent.com/filip-lebiecki/xray-xhttp/refs/heads/main/index.html
+sudo apt update && sudo apt install nginx certbot python3-certbot-nginx -y
 
 ```
 
+### 2. Setup the "Camouflage" cpp server
+
+Create cpp user and download cpp fileserver.
+
+```bash
+useradd -m /bin/bash cpp
+passwd cpp
+cd /etc/systemd/system/
+wget https://raw.githubusercontent.com/llmagine22/xray-xhttp/refs/heads/main/copyparty.service
+mkdir /var/lib/copyparty-jail
+
+```
+
+```bash
+su cpp
+wget https://github.com/9001/copyparty/releases/latest/download/copyparty-sfx.py
+wget https://raw.githubusercontent.com/llmagine22/xray-xhttp/refs/heads/main/cpp-conf
+
+```
+
+```bash
+su lupin
+sudo systemctl daemon-reload
+
+```
 ### 3. Obtain SSL Certificates
 
 Use Certbot to get a free Let's Encrypt certificate. Replace `yourdomain.com` with your actual domain.
 
 ```bash
-certbot certonly --nginx -d yourdomain.com
+certbot certonly --nginx -d cppru.nekos96.xyz
 
 ```
 
@@ -67,12 +98,12 @@ Set up NGINX to handle HTTPS and redirect HTTP to HTTPS.
 
 ```bash
 cd /etc/nginx/sites-available
-wget https://raw.githubusercontent.com/filip-lebiecki/xray-xhttp/refs/heads/main/default_https_site_only
+wget https://raw.githubusercontent.com/llmagine22/xray-xhttp/refs/heads/main/default
 cd /etc/nginx/sites-enabled/
-rm /etc/nginx/sites-enabled/default
-ln -s /etc/nginx/sites-available/default_https_site_only default
+sudo rm /etc/nginx/sites-enabled/default
+sudo ln -s /etc/nginx/sites-available/default default
 nginx -t
-systemctl reload nginx
+sudo systemctl enable --now nginx
 ```
 
 ### 5. Install Xray
@@ -80,6 +111,7 @@ systemctl reload nginx
 Install the latest version of Xray using the official script.
 
 ```bash
+sudo -i
 bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
 
 ```
@@ -91,10 +123,12 @@ Generate a UUID for authentication:
 ```bash
 xray uuid
 # Copy the output, you will need it for the config below
+```
 
+```bash
 cd /usr/local/etc/xray
 rm config.json
-wget https://raw.githubusercontent.com/filip-lebiecki/xray-xhttp/refs/heads/main/config.json
+wget https://raw.githubusercontent.com/llmagine22/xray-xhttp/refs/heads/main/config.json
 ```
 
 *Note: Ensure `path` matches what we will configure in NGINX.*
@@ -102,29 +136,19 @@ wget https://raw.githubusercontent.com/filip-lebiecki/xray-xhttp/refs/heads/main
 Restart Xray:
 
 ```bash
+su lupin
 systemctl restart xray
 
 ```
 
 ### 7. Configure NGINX Reverse Proxy
 
-Update NGINX to forward the secret path to Xray.
-
-```bash
-cd /etc/nginx/sites-available
-wget https://raw.githubusercontent.com/filip-lebiecki/xray-xhttp/refs/heads/main/default_https
-cd /etc/nginx/sites-enabled/
-rm /etc/nginx/sites-enabled/default
-ln -s /etc/nginx/sites-available/default_https default
-nginx -t
-systemctl reload nginx
-```
-
-Test and reload NGINX:
+Test and reload NGINX and cpp:
 
 ```bash
 nginx -t
-systemctl reload nginx
+sudo systemctl reload nginx
+sudo systemctl enable --now copyparty
 
 ```
 
@@ -154,7 +178,7 @@ You can use **v2RayN** (Windows), **v2RayNG** (Android), or the raw **Xray CLI**
       "settings": {
         "vnext": [
           {
-            "address": "yourdomain.com",
+            "address": "cppru.nekos96.xyz",
             "port": 443,
             "users": [
               {
@@ -169,11 +193,11 @@ You can use **v2RayN** (Windows), **v2RayNG** (Android), or the raw **Xray CLI**
         "network": "xhttp",
         "security": "tls",
         "tlsSettings": {
-          "serverName": "yourdomain.com",
+          "serverName": "cppru.nekos96.xyz",
           "fingerprint": "chrome"
         },
         "xhttpSettings": {
-          "path": "/api/stream",
+          "path": "/video/stream-dl",
           "mode": "packet-up"
         }
       }
@@ -187,16 +211,16 @@ You can use **v2RayN** (Windows), **v2RayNG** (Android), or the raw **Xray CLI**
 
 If using a GUI, map the settings as follows:
 
-* **Address:** `yourdomain.com`
+* **Address:** `cppru.nekos96.xyz`
 * **Port:** `443`
 * **Protocol:** `VLESS`
 * **UUID:** (Paste your generated UUID)
 * **Flow:** Empty (or packet-up if available)
 * **Encryption:** `none`
 * **Transport:** `xhttp` or `http` (depending on client version)
-* **Path:** `/api/stream`
+* **Path:** `/video/stream-dl`
 * **TLS:** `TLS`
-* **SNI:** `yourdomain.com`
+* **SNI:** `cppru.nekos96.xyz`
 * **Fingerprint (uTLS):** `chrome`
 
 ---
