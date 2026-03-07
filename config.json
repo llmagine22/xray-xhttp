@@ -1,0 +1,32 @@
+{
+  "log": {
+    "loglevel": "none"
+  },
+  "inbounds": [
+    {
+      "port": 8080,
+      "listen": "127.0.0.1",
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "YOUR-ID"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "/video/stream-dl",
+          "mode": "packet-up"
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom"
+    }
+  ]
+}
