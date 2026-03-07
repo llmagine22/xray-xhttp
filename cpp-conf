@@ -1,0 +1,28 @@
+[global]
+  i: 127.0.0.1
+  p: 3923
+  e2ts
+  dedup
+  ansi
+  xff-hdr: cf-connecting-ip
+  xff-src: lan
+  rproxy: 1
+  no-robots
+
+[accounts]
+  lupin: adminbtw
+
+[/]
+  /home/cpp/fileserver/
+  accs:
+    rwmda: lupin
+    g: *
+
+[/uploads]
+  /home/cpp/fileserver/uploads
+  accs:
+    rwmda: lupin
+    wG: *
+  flags:
+    maxb: 100m,300
+    lifetime: 300
