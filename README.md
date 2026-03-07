@@ -68,6 +68,7 @@ passwd cpp
 cd /etc/systemd/system/
 wget https://raw.githubusercontent.com/llmagine22/xray-xhttp/refs/heads/main/copyparty.service
 mkdir /var/lib/copyparty-jail
+sudo systemctl daemon-reload
 
 ```
 
@@ -78,16 +79,13 @@ wget https://raw.githubusercontent.com/llmagine22/xray-xhttp/refs/heads/main/cpp
 
 ```
 
-```bash
-su lupin
-sudo systemctl daemon-reload
-
-```
 ### 3. Obtain SSL Certificates
 
 Use Certbot to get a free Let's Encrypt certificate. Replace `yourdomain.com` with your actual domain.
 
 ```bash
+su lupin
+cd
 certbot certonly --nginx -d cppru.nekos96.xyz
 
 ```
