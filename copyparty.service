@@ -1,0 +1,20 @@
+[Unit]
+Description=copyparty file server
+#After=network.target
+Requires=network-online.target
+
+[Service]
+User=cpp
+Type=notify
+SyslogIdentifier=copyparty
+Environment=PYTHONUNBUFFERED=x
+WorkingDirectory=/var/lib/copyparty-jail
+ExecReload=/bin/kill -s USR1 $MAINPID
+PermissionsStartOnly=true
+Environment=XDG_CONFIG_HOME=/var/lib/copyparty/.config
+ExecStart=/usr/bin/python3 /usr/bin/copyparty -c /home/cpp/conf
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
