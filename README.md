@@ -37,7 +37,7 @@ To a Deep Packet Inspection (DPI) firewall, this setup looks like:
 1) Change ssh port, ban root
 2) :
 ```bash
-useradd -m /bin/bash lupin
+useradd -m -s /bin/bash lupin
 passwd lupin
 nano /etc/sudoers
 
@@ -66,7 +66,7 @@ sudo -i
 Create cpp user and download cpp fileserver.
 
 ```bash
-useradd -m /bin/bash cpp
+useradd -m -s /bin/bash cpp
 passwd cpp
 nano /etc/systemd/system/copyparty.service
 ```
