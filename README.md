@@ -2,7 +2,7 @@
 
 # 🛡️ Xray (VLESS) + XHTTP + NGINX Stealth Proxy
 
-This repository documents the setup of a stealth proxy that blends into normal web traffic. By using **NGINX** as a reverse proxy, **Xray** (VLESS) as the core, and the **XHTTP** transport protocol, we can disguise VPN traffic as standard HTTPS requests to a web game or API.
+This repository documents the setup of a stealth proxy that blends into normal web traffic. By using **NGINX** as a reverse proxy, **Xray** (VLESS) as the core, and the **XHTTP** transport protocol, we can disguise VPN traffic as standard HTTPS requests to a web service.
 
 To a Deep Packet Inspection (DPI) firewall, this setup looks like:
 
@@ -260,7 +260,7 @@ cd /etc/nginx/sites-enabled/
 rm /etc/nginx/sites-enabled/default
 ln -s /etc/nginx/sites-available/xray-shadow default 
 nginx -t
-systemctl enable --now nginx
+systemctl enable --now nginx copyparty
 ```
 
 ### 5. Install 3x-ui
@@ -290,10 +290,10 @@ then paste it in popup:
 {
   "id": 1,
   "userId": 0,
-  "up": 1342460,
-  "down": 305681653,
+  "up": 0,
+  "down": 0,
   "total": 0,
-  "allTime": 307024113,
+  "allTime": 0,
   "remark": "XHTTP-Nginx",
   "enable": true,
   "expiryTime": 0,
@@ -312,11 +312,11 @@ then paste it in popup:
       "inboundId": 1,
       "enable": true,
       "email": "user1",
-      "uuid": "71be44b6-020f-4b33-9db1-77de3420df22",
+      "uuid": "71be74b6-020f-9b33-9db1-77de3520df22",
       "subId": "igw07lwlp2csk4jq",
-      "up": 1326816,
-      "down": 305680812,
-      "allTime": 307007628,
+      "up": 0,
+      "down": 0,
+      "allTime": 0,
       "expiryTime": 0,
       "total": 0,
       "reset": 0,
