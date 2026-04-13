@@ -98,7 +98,6 @@ WantedBy=multi-user.target
 then:
 ```bash
 mkdir /var/lib/copyparty-jail
-mkdir /home/cpp/fileserver
 sudo systemctl daemon-reload
 ```
 
@@ -106,6 +105,7 @@ Download copyparty binary `as user cpp!`:
 ```bash
 su cpp
 cd
+mkdir /home/cpp/fileserver
 wget https://github.com/9001/copyparty/releases/latest/download/copyparty-sfx.py
 
 ```
@@ -272,7 +272,13 @@ bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.
 
 ```
 
-#### `IMPORTANT!!!
+#### `IMPORTANT 1 !!!
+
+Installing you need to choose 3) option - Use existing cert and enter paths to Nginx cert:
+`/etc/letsencrypt/live/cppru.nekos96.xyz/fullchain.pem`
+`/etc/letsencrypt/live/cppru.nekos96.xyz/privkey.pem`
+
+#### `IMPORTANT 2 !!!
 You need to change default panel and subscription ports add paths!
 
 ### 6. Configure Inbound
